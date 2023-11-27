@@ -96,29 +96,57 @@ else {
     $MailboxDetailedRequest.ForwardingSmtpAddress 
 }
 
-
-$GraphRequest = [ordered]@{
-    ForwardAndDeliver        = $MailboxDetailedRequest.DeliverToMailboxAndForward
-    ForwardingAddress        = $ForwardingAddress
-    LitiationHold            = $MailboxDetailedRequest.LitigationHoldEnabled
-    HiddenFromAddressLists   = $MailboxDetailedRequest.HiddenFromAddressListsEnabled
-    EWSEnabled               = $CASRequest.EwsEnabled
-    MailboxMAPIEnabled       = $CASRequest.MAPIEnabled
-    MailboxOWAEnabled        = $CASRequest.OWAEnabled
-    MailboxImapEnabled       = $CASRequest.ImapEnabled
-    MailboxPopEnabled        = $CASRequest.PopEnabled
-    MailboxActiveSyncEnabled = $CASRequest.ActiveSyncEnabled
-    Permissions              = $ParsedPerms
-    ProhibitSendQuota        = [math]::Round([float]($MailboxDetailedRequest.ProhibitSendQuota -split ' GB')[0], 2)
-    ProhibitSendReceiveQuota = [math]::Round([float]($MailboxDetailedRequest.ProhibitSendReceiveQuota -split ' GB')[0], 2)
-    ItemCount                = [math]::Round($StatsRequest.ItemCount, 2)
-    TotalItemSize            = [math]::Round($StatsRequest.TotalItemSize / 1Gb, 2)
-    TotalArchiveItemSize     = $ArchiveSize.TotalItemSize.Split(" ")[0]
-    TotalArchiveItemCount    = [math]::Round($ArchiveSize.ItemCount, 2)
-    BlockedForSpam           = $BlockedForSpam
-    ArchiveMailBox           = $ArchiveEnabled
-    AutoExpandingArchive     = $Archive.AutoExpandingArchiveEnabled
+if ($ArchiveSize) { 
+    $GraphRequest = [ordered]@{
+        ForwardAndDeliver        = $MailboxDetailedRequest.DeliverToMailboxAndForward
+        ForwardingAddress        = $ForwardingAddress
+        LitiationHold            = $MailboxDetailedRequest.LitigationHoldEnabled
+        HiddenFromAddressLists   = $MailboxDetailedRequest.HiddenFromAddressListsEnabled
+        EWSEnabled               = $CASRequest.EwsEnabled
+        MailboxMAPIEnabled       = $CASRequest.MAPIEnabled
+        MailboxOWAEnabled        = $CASRequest.OWAEnabled
+        MailboxImapEnabled       = $CASRequest.ImapEnabled
+        MailboxPopEnabled        = $CASRequest.PopEnabled
+        MailboxActiveSyncEnabled = $CASRequest.ActiveSyncEnabled
+        Permissions              = $ParsedPerms
+        ProhibitSendQuota        = [math]::Round([float]($MailboxDetailedRequest.ProhibitSendQuota -split ' GB')[0], 2)
+        ProhibitSendReceiveQuota = [math]::Round([float]($MailboxDetailedRequest.ProhibitSendReceiveQuota -split ' GB')[0], 2)
+        ItemCount                = [math]::Round($StatsRequest.ItemCount, 2)
+        TotalItemSize            = [math]::Round($StatsRequest.TotalItemSize / 1Gb, 2)
+        TotalArchiveItemSize     = $ArchiveSize.totalItemSize.split('(')[0]
+        TotalArchiveItemCount    = [math]::Round($ArchiveSize.ItemCount, 2)
+        BlockedForSpam           = $BlockedForSpam
+        ArchiveMailBox           = $ArchiveEnabled
+        AutoExpandingArchive     = $Archive.AutoExpandingArchiveEnabled
+        RecipientTypeDetails     = $MailboxDetailedRequest.RecipientTypeDetails
+    }
 }
+else {
+    $GraphRequest = [ordered]@{
+        ForwardAndDeliver        = $MailboxDetailedRequest.DeliverToMailboxAndForward
+        ForwardingAddress        = $ForwardingAddress
+        LitiationHold            = $MailboxDetailedRequest.LitigationHoldEnabled
+        HiddenFromAddressLists   = $MailboxDetailedRequest.HiddenFromAddressListsEnabled
+        EWSEnabled               = $CASRequest.EwsEnabled
+        MailboxMAPIEnabled       = $CASRequest.MAPIEnabled
+        MailboxOWAEnabled        = $CASRequest.OWAEnabled
+        MailboxImapEnabled       = $CASRequest.ImapEnabled
+        MailboxPopEnabled        = $CASRequest.PopEnabled
+        MailboxActiveSyncEnabled = $CASRequest.ActiveSyncEnabled
+        Permissions              = $ParsedPerms
+        ProhibitSendQuota        = [math]::Round([float]($MailboxDetailedRequest.ProhibitSendQuota -split ' GB')[0], 2)
+        ProhibitSendReceiveQuota = [math]::Round([float]($MailboxDetailedRequest.ProhibitSendReceiveQuota -split ' GB')[0], 2)
+        ItemCount                = [math]::Round($StatsRequest.ItemCount, 2)
+        TotalItemSize            = [math]::Round($StatsRequest.TotalItemSize / 1Gb, 2)
+        TotalArchiveItemSize     = 0
+        TotalArchiveItemCount    = 0
+        BlockedForSpam           = $BlockedForSpam
+        ArchiveMailBox           = $ArchiveEnabled
+        AutoExpandingArchive     = $Archive.AutoExpandingArchiveEnabled
+        RecipientTypeDetails     = $MailboxDetailedRequest.RecipientTypeDetails
+    }
+}
+
 
 #$GraphRequest = [ordered]@{
 #    Connectivity  = $CASRequest
